@@ -9,7 +9,8 @@ def repeats(text,n=3):
     d={k:v for k,v in d.items() if len(v)>1}
     return d
 
-def distances(dic):
+def distances(text):
+    dic=repeats(text)
     d={}
     for k,v in dic.items():
         d[k]=[v[i+1]-v[i] for i in range (len(v)-1)]
@@ -26,7 +27,8 @@ def gcd_list(nums):
             a=gcd(a,nums[i])
         return a
 
-def candidate_lengths(d):
+def candidate_lengths(text):
+    d=distances(text)
     dic={}
     for k,v in d.items():
         dic[k]=gcd_list(v)
@@ -39,20 +41,23 @@ def factors(n):
             l.append(i)
     return l
 
-def factor_candidates(d):
+def factor_candidates(text):
+    d=candidate_lengths(text)
     dic={}
     for k,v in d.items():
         dic[k]=factors(v)
     return dic
 
-def factor_votes(dic):
+def factor_votes(text):
+    dic=factor_candidates(text)
     d={}
     for v in dic.values():
         for i in v:
             d[i]=d.get(i,0)+1
     return d
 
-def rank_candidates(d, max_len):
+def rank_candidates(text, max_len):
+    d=factor_votes(text)
     l=[(k,v) for k,v in sorted(d.items(), key=lambda int: (-int[1], int[0])) if k<=max_len ]
     return l
 
@@ -116,12 +121,7 @@ def rank_key_lengths_IC(text, max_len):
     return d
 
 def analyze_key_lengths(text,max_len):
-    repeat=repeats(text)
-    dis=distances(repeat)
-    gcd_list=candidate_lengths(dis)
-    fac=factor_candidates(gcd_list)
-    fac_votes=factor_votes(fac)
-    fac_votes=rank_candidates(fac_votes,max_len)
+    fac_votes=rank_candidates(text,max_len)
     return fac_votes
 
 def combined_ranking(text,max_len=None):
@@ -200,14 +200,55 @@ def chi_ranking(text):
     d1={k:v for k,v in sorted(d1.items(), key=lambda int: int[1])}
     return d1
 
-# l=group("WKLVLVDQHQJOLVKWHAWWKDWFRQWDLQVPDQBOHWWHUVIUHTXHQFLHV",4)
-# print(l)
+# print(combined_ranking("RIJVSUYVJNRIJVSUYVJNRIJVSUYVJNRIJVSUYVJN"))
 
-rank=chi_ranking("WKLVLVDQHQJOLVKWHAWWKDWFRQWDLQVPDQBOHWWHUVIUHTXHQFLHV")
-print(rank)
-
+# rank=chi_ranking("LXFOPVEFRNHR")
+# print(rank)
 
 
+def get_key(s,key):
+    l=group(s,key)
+    l1=[list(chi_ranking(i).keys()) for i in l]
+    l2=[]
+    for i in l1:
+        l2.append(i[0])
+    k=""
+    for i in l2:
+        k+=i
+    return k 
 
+# print(get_key("RIJVSUYVJNRIJVSUYVJNRIJVSUYVJNRIJVSUYVJN",3))
+
+# print(group("RIJVSUYVJNRIJVSUYVJNRIJVSUYVJNRIJVSUYVJN",3))
+
+# print(combined_ranking("GIYBIBSWAYZCBIBCETOCMEVQOPD"))
+
+one="LGDCFDXTSDFMQHILPXSLELQFVGIDQNCVUSQWIMJRDEZRFXEXZOCEZQUPWFCJLVPHUPSXRFESZSOCMPURQEDARCWICEVIPWAELQTV"
+two="PPPGJSMXSPSMXREPRIOYVIPOYZRSHUPRMFEZADCNOXAGPSSAZOPCABQELQJVWPMUROEDYPWSGRFREFVRCIPOOZZQHUPLUZYDFGHG"
+three="SIMTGPVZCBYVQANTRQRJLVYOAOFDWTSXMHELZQZRCWFCCAIPPRDMPSNHSARRYKMHRESMGXQSDRVCIOHVZREOAOEZSYOIDZLHSYOA"
+four="ASUBGPHFCJLVPHUPQMFXPXZSNCXTSELMXKNJWFOGTSZHUPXAKASEPQULRSSQZZQFGSIKSNCWKSGTXEZVMVMFLCIYOVYIPAHNLFVR"
+five="DEYSFSIXJRDWFCBOEXCARXTSJLPXGSTPXSQHMFVFESDWRDSRRVDXMBGAPMQRDWOWRYXUTVNHUGPZZQFVPWMBQAIADYPATCULHEVN"
+six="AIPVVDXAFLPZQFLXSDBVYKEIAWMSVGPRFSEPHFVEZYSVGSIFOYWAUBQZAEOAOVQOPSIPHUPXMPYPWIVRCIEHHOIZHFCIMRJCSFSA"
+seven="ZXQGNYHBFRAEDSQQSDHUPMDSKLQUBNEMABFDSYSPLQQHBDXGRLXEFVRXEFWPDATWYPSFVRCWESNCGTSQQSDPBZOEOOZYFZNYKGOT"
+eight="PQGGVNSDHUPRMHHCEXKBCPPCAXEDYREHMMFELQGGCIQHFMIOOZPFGGLHMFVPLVFGNYHNWPJGXSFDLADXPIBSEDEDFNYKQRSCIEVS"
+nine="CYUHBFXEWQPXTSVCHACEDEZRGSIEARWPATOCIMRQCMRHROJDCZELQPNVIDMNEXTSPZVZSEGMEWGZVECSEIZDNFWQRGZPUGGPRFCG"
+ten="SIYIFTGUOADATCCWEKSQYIMFGSIRCHYXMWAELQWEXIXCQTIEHELZQZYPHFVEZYSVGSIEEHLVQOAOQULROAUHUELQCEOMZOEJWAIA"
+eleven="OWATPZRHSEDEFWBYFKSIPRUBTELQANCOQHFWSIZLPQBHVPHXOZAWMDCPEDSQTRFVRHMZRBHWMBQELQHBHRESGEPQRVYXAWGDJMAV"
+twelve="WMMFESCFVZLKACQTRHSFEMSOGTSZPRRMZGJTXTQNCIRIYZFESEGEFWBYVMHUPVFVNYEOQRAXUBTELQTVCWFSKAPMBNEMABNCIESN"
+thirteen="CGTSEREFVRCWQJVOIZQRNSYDNCIERVQJQFRYXBCFDMNWYTXUSFLRPQUPGWGJSIFVRCXTSEPWGZGDGMBOPVQDRLXQRNDMZUYPQQOF"
+fourteen="FVQARYXYOLMIYWFWIMRVYKQGCPGUOYWCIVRYXTSFLQBZRTWEANWPYCEPSNGRCZMHVZREQNYVQJRLPMDNEXQFAMYFSIPRMZNCKQQB"
+fifteen="WPQQGTSZCSYYYPRCWYIFEFQWAEIDDEPXQRJTXTQNCIFVRDXDCARIEHPZROZHDMABFLVQHUZWQGHATAFGPHNMFPZQFNWMZRRAIZRR"
+sixteen="YXXWAPWATRGMPSANI"
+
+ciphertext=one+two+three+four+five+six+seven+eight+nine+ten+eleven+twelve+thirteen+fourteen+fifteen+sixteen
+
+
+
+
+
+print(combined_ranking(ciphertext,15))
+
+print(get_key(ciphertext,10))
+print(get_key(ciphertext,5))
 
 
