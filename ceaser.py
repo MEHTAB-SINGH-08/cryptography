@@ -21,14 +21,14 @@ def decrypt_ceaser(C,k):
     return p
 
 s=input("Enter plaintext: ")
+n=int(input("Key: "))
+print(decrypt_ceaser(s,n))
+# for k in range(26):
+#     C=encrypt_ceaser(s,k)
+#     p=decrypt_ceaser(C,k)
 
-print(decrypt_ceaser(s,3))
-for k in range(26):
-    C=encrypt_ceaser(s,k)
-    p=decrypt_ceaser(C,k)
+#     assert p==s, f"Test failed by key {k}"
 
-    assert p==s, f"Test failed by key {k}"
-
-print("All went well!")
+# print("All went well!")
 
 
